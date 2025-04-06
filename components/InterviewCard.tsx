@@ -3,10 +3,11 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import DisplayTechIcons from './DisplayTechIcons';
+import { getFeedbackByInterviewId } from '@/lib/actions/general.action';
 
-const InterviewCard = ({id, userId, role, type, techstack, createdAt }: InterviewCardProps) => {
+const InterviewCard = async ({id, userId, role, type, techstack, createdAt }: InterviewCardProps) => {
   
-  const feedback = null as Feedback | null;
+  const feedback = userId && id ? await getFeedbackByInterviewId({ interviewId: id, userId}) : null;
   const normalizeType = /mix/gi.test(type) ? 'Mixed' : type;
   const formattedDate = dayjs(feedback ?.createdAt || createdAt || Date.now()).format('MMM D, YYYY');
   return (

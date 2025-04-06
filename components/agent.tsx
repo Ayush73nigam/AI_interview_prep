@@ -1,6 +1,7 @@
 "use client"
 
 import { interviewer } from '@/constants';
+import { createFeedback } from '@/lib/actions/general.action';
 import { cn } from '@/lib/utils';
 import { vapi } from '@/lib/vapi.sdk';
 import Image from 'next/image'
@@ -19,7 +20,7 @@ interface SavedMessage {
    content: string;
 }
 
-const Agent = ({ userName, userId, type, interviewId, questions }: AgentProps) => {
+const Agent = ({ userName, userId, interviewId, type, questions }: AgentProps) => {
   
   const router = useRouter();
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -73,10 +74,11 @@ const Agent = ({ userName, userId, type, interviewId, questions }: AgentProps) =
   const handleGenerateFeedback = async (messages: SavedMessage[]) => {
    console.log('Generate feedback here.');
 
-   const { success, id } = {
-      success: true,
-      id: 'feedback-id'
-   }
+   const { success, feedbackId: id } = await createFeedback({
+      interviewId: interviewId!,
+      userId: userId!,
+      transcript: messages
+   })
 
    if(success && id){
       router.push(`/interview/${interviewId}/feedback`);
@@ -96,6 +98,8 @@ const Agent = ({ userName, userId, type, interviewId, questions }: AgentProps) =
    }
 
   }, [messages, callStatus, type, userId]);
+
+
 
   const handleCall = async () => {
    setCallStatus(CallStatus.CONNECTING);
