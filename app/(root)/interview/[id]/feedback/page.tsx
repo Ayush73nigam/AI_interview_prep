@@ -1,28 +1,29 @@
-import { Button } from '@/components/ui/button';
-import { getCurrentUser } from '@/lib/actions/auth.action';
-import { getFeedbackByInterviewId, getInterviewById } from '@/lib/actions/general.action';
-import dayjs from 'dayjs';
-import Image from 'next/image';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import React from 'react'
+import dayjs from "dayjs";
+import Link from "next/link";
+import Image from "next/image";
+import { redirect } from "next/navigation";
 
-const page = async ({ params }: RouteParams) => {
+import {
+  getFeedbackByInterviewId,
+  getInterviewById,
+} from "@/lib/actions/general.action";
+import { Button } from "@/components/ui/button";
+import { getCurrentUser } from "@/lib/actions/auth.action";
 
+const Feedback = async ({ params }: RouteParams) => {
   const { id } = await params;
   const user = await getCurrentUser();
 
   const interview = await getInterviewById(id);
-  if(!interview) redirect('/');
+  if (!interview) redirect("/");
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
-    userId: user?.id!
+    userId: user?.id!,
   });
 
-  console.log(feedback);
   return (
-<section className="section-feedback">
+    <section className="section-feedback">
       <div className="flex flex-row justify-center">
         <h1 className="text-4xl font-semibold">
           Feedback on the Interview -{" "}
@@ -112,7 +113,7 @@ const page = async ({ params }: RouteParams) => {
         </Button>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default page
+export default Feedback;
